@@ -6,12 +6,14 @@
     "start": "bun --hot run src/index.ts"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "prisma": "^6.0.1"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
   "dependencies": {
+    "@prisma/client": "^6.0.1",
     "discord.js": "^14.16.3"
   }
 }

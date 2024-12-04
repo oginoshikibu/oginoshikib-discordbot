@@ -10,8 +10,16 @@ services:
       - node_modules:/app/node_modules
     networks:
       - discord-bot-network
+    depends_on:
+      - sqlite
+
   sqlite:
-    image: "sqlite"
+    container_name: sqlite
+    image: sqlite
+    environment:
+      - SQLUTE_USER=user
+      - SQLUTE_PASSWORD=password
+      - SQLUTE_DATABASE=database
     networks:
       - discord-bot-network
     volumes:

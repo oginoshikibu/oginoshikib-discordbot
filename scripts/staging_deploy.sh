@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd oginoshikibu-discordbot || exit
-git pull
-docker compose stop
-docker compose up -d --build
+cd /home/ubuntu/oginoshikibu-discordbot || exit
+/usr/bin/git pull
+/usr/bin/docker compose stop
+/usr/bin/docker compose up -d --build

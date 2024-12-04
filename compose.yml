@@ -8,6 +8,20 @@ services:
     volumes:
       - .:/app
       - node_modules:/app/node_modules
+    networks:
+      - discord-bot-network
+  sqlite:
+    image: "sqlite"
+    networks:
+      - discord-bot-network
+    volumes:
+      - sqlite-data:/var/lib/sqlite
+
+
+networks:
+  discord-bot-network:
+    driver: bridge
 
 volumes:
   node_modules:
+  sqlite-data:

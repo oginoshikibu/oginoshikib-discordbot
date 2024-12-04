@@ -1,4 +1,4 @@
-import { REST, Routes } from 'discord.js';
+import { REST, Routes, TextChannel } from 'discord.js';
 
 const server = Bun.serve({
     port: 3000,
@@ -42,14 +42,21 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user?.tag ?? 'unknown user'}!`);
+    const channelId = process.env.CHANNEL_ID;
+    if (channelId) {
+        const channel = client.channels.cache.get(channelId) as TextChannel;
+        channel?.send('Hello, world!');
+    } else {
+        console.error('CHANNEL_ID is not defined');
+    }
 });
 
 client.on('interactionCreate', async interaction => {
-  if (!interaction.isChatInputCommand()) return;
+    if (!interaction.isChatInputCommand()) return;
 
-  if (interaction.commandName === 'ping') {
-    await interaction.reply('Pong!');
-  }
+    if (interaction.commandName === 'ping') {
+        await interaction.reply('Pong!');
+    }
 });
 
 client.login(process.env.DISCORD_BOT_TOKEN);

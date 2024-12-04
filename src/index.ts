@@ -1,4 +1,8 @@
 import { REST, Routes, TextChannel } from 'discord.js';
+import { PrismaClient } from '@prisma/client';
+
+// 接続test
+const prisma = new PrismaClient();
 
 const commands = [
     {

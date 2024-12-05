@@ -8,4 +8,7 @@ COPY package.json /app
 
 RUN bun install
 
+COPY prisma /app/prisma
+RUN bun prisma generate
+
 CMD [ "bun", "start" ]

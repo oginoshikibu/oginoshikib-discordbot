@@ -1,0 +1,56 @@
+{
+	// # devcontainer.json sample
+	// recommend: Do not sort json
+	// ## To create image
+	"name": "discord-bot",
+	"workspaceFolder": "/workspace",
+	"shutdownAction": "stopCompose",
+	// ## From base image
+	"dockerComposeFile": [
+		"./compose.yml"
+	],
+	"service": "ubuntu",
+	"runServices": [],
+	// ## Resources
+	// warning: Can not use Env
+	"mounts": [
+		{
+			"type": "bind",
+			"source": "${localWorkspaceFolder}",
+			"target": "${containerWorkspaceFolder}"
+		},
+		{
+			"type": "volume",
+			"source": "node_modules",
+			"target": "/workspace/node_modules"
+		}
+	],
+	"features": {
+		"ghcr.io/devcontainers/features/common-utils:2": {},
+		"ghcr.io/devcontainers/features/git:1": {},
+		"ghcr.io/shyim/devcontainers-features/bun:0": {},
+		"ghcr.io/devcontainers-extra/features/prisma:2": {},
+		"ghcr.io/warrenbuckley/codespace-features/sqlite:1": {}
+	},
+	// ## Environment
+	"remoteUser": "root",
+	"containerEnv": {},
+	"remoteEnv": {},
+	"portsAttributes": {
+		"80": {
+			"label": "http",
+			"onAutoForward": "silent"
+		}
+	},
+	// ## Container command
+	// warning: To use .sh you need mount
+	// info: key is output stage
+	"overrideCommand": true,
+	// ## IDE
+	"customizations": {
+		"vscode": {
+			"extensions": [],
+			"settings": {}
+		}
+	}
+}

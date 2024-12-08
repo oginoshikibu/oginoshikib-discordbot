@@ -5,8 +5,8 @@ const messageCreate = async (message: Message): Promise<void> => {
     if (message.author.bot) return;
     console.log(`Message received: (${message.createdTimestamp}) ${message.content}`);
 
-    // register blog
-    if (message.channel.id === process.env.BLOG_CHANNEL_ID) {
+    // register article
+    if (message.channel.id === process.env.ARTICLE_CHANNEL_ID) {
 
         const parsedMessageURL = (() => {
             try {
@@ -20,7 +20,7 @@ const messageCreate = async (message: Message): Promise<void> => {
         if (!parsedMessageURL) return;
 
         const prismaClient = new PrismaClient();
-        const Blog = await prismaClient.blog.create({
+        const Article = await prismaClient.article.create({
             data: {
                 url: parsedMessageURL.href,
                 title: "test",

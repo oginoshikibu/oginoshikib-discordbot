@@ -18,14 +18,27 @@ export const registarArticleByMessage = async (message: Message): Promise<void> 
     if (!parsedMessageURL) return;
 
     // URLからタイトルを取得
+    const fetchWithTimeout = async (url: string, timeout: number): Promise<Response> => {
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), timeout);
+        const response = await fetch(url, { signal: controller.signal });
+        clearTimeout(id);
+        return response;
+    };
+
     const articleTitle = await (async () => {
-        const response = await fetch(parsedMessageURL.href);
-        const html = await response.text();
-        // JSDOMを使ってDOMを生成し、title要素を取得（なければ'No title'を返す）
-        // 非効率かも……けど正規表現で取得するのもなんか違う気がする……？
-        const dom = new JSDOM(html);
-        const title = dom.window.document.querySelector('title')?.textContent || 'No title';
-        return title;
+        console.log(`Fetching title from ${parsedMessageURL.href}`);
+        try {
+            const response = await fetchWithTimeout(parsedMessageURL.href, 5000); // 5 seconds timeout
+            const html = await response.text();
+            const titleMatch = html.match(/<title>(.*?)<\/title>/);
+            const title = titleMatch ? titleMatch[1] : 'No title found';
+            console.log(`Fetched title: ${title}`);
+            return title;
+        } catch (error: any) {
+            console.error(`Failed to fetch title: ${error.message}`);
+            return 'No title found';
+        }
     })();
 
     // データベースに登録

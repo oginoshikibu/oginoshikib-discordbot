@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 import type { Message } from "discord.js";
-import { JSDOM } from "jsdom";
 
 
 export const registarArticleByMessage = async (message: Message): Promise<void> => {
@@ -12,6 +11,7 @@ export const registarArticleByMessage = async (message: Message): Promise<void> 
         }
         catch (error) {
             message.reply('Invalid URL');
+            console.error(error);
             return null;
         }
     })();

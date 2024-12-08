@@ -1,6 +1,6 @@
 import { REST, TextChannel } from 'discord.js';
 import { Client, GatewayIntentBits } from 'discord.js';
-import messageCreate from './root/messageCreate';
+import messageCreate from './events/messageCreate';
 
 if (!process.env.DISCORD_BOT_TOKEN) {
     throw new Error('DISCORD_BOT_TOKEN is not defined');

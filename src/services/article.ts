@@ -4,6 +4,8 @@ import { JSDOM } from "jsdom";
 
 
 export const registarArticleByMessage = async (message: Message): Promise<void> => {
+
+    // 正しいURLかどうかをURLクラスを使って判定
     const parsedMessageURL = (() => {
         try {
             return new URL(message.content);
@@ -15,15 +17,18 @@ export const registarArticleByMessage = async (message: Message): Promise<void> 
     })();
     if (!parsedMessageURL) return;
 
-
+    // URLからタイトルを取得
     const articleTitle = await (async () => {
         const response = await fetch(parsedMessageURL.href);
         const html = await response.text();
+        // JSDOMを使ってDOMを生成し、title要素を取得（なければ'No title'を返す）
+        // 非効率かも……けど正規表現で取得するのもなんか違う気がする……？
         const dom = new JSDOM(html);
         const title = dom.window.document.querySelector('title')?.textContent || 'No title';
         return title;
     })();
 
+    // データベースに登録
     const prismaClient = new PrismaClient();
     const Article = await (async () => {
         try {

@@ -25,12 +25,20 @@ export const registarArticleByMessage = async (message: Message): Promise<void> 
     })();
 
     const prismaClient = new PrismaClient();
-    const Article = await prismaClient.article.create({
-        data: {
-            url: parsedMessageURL.href,
-            title: "test",
-        },
-    });
+    const Article = await (async () => {
+        try {
+            return await prismaClient.article.create({
+                data: {
+                    url: parsedMessageURL.href,
+                    title: articleTitle,
+                },
+            });
+        } catch (error: any) {
+            message.reply(`Failed to register article: ${error.message}`);
+            return null;
+        }
+    })();
+    if (!Article) return;
 
     await prismaClient.$disconnect();
 }

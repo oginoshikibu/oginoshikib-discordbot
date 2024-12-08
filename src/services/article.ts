@@ -40,5 +40,6 @@ export const registarArticleByMessage = async (message: Message): Promise<void> 
     })();
     if (!Article) return;
 
+    await message.react('👍');  //  成功時
     await prismaClient.$disconnect();
 }

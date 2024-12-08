@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import type { Message } from "discord.js";
+import { JSDOM } from "jsdom";
 
 
 export const registarArticleByMessage = async (message: Message): Promise<void> => {
@@ -13,6 +14,15 @@ export const registarArticleByMessage = async (message: Message): Promise<void> 
         }
     })();
     if (!parsedMessageURL) return;
+
+
+    const articleTitle = await (async () => {
+        const response = await fetch(parsedMessageURL.href);
+        const html = await response.text();
+        const dom = new JSDOM(html);
+        const title = dom.window.document.querySelector('title')?.textContent || 'No title';
+        return title;
+    })();
 
     const prismaClient = new PrismaClient();
     const Article = await prismaClient.article.create({

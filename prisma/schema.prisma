@@ -10,11 +10,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model timeline {
+model blog {
   id Int @id @default(autoincrement())
-  timestamp DateTime
-  kind Int
-  title String
+  url String
+  title String?
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   deleted_at DateTime?

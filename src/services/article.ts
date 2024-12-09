@@ -4,6 +4,8 @@ import type { Message } from "discord.js";
 
 export const registarArticleByMessage = async (message: Message): Promise<void> => {
 
+    console.log(`start registarArticleByMessage`);
+
     // 正しいURLかどうかをURLクラスを使って判定
     const parsedMessageURL = (() => {
         try {
@@ -53,6 +55,7 @@ export const registarArticleByMessage = async (message: Message): Promise<void> 
     // データベースに登録
     const prismaClient = new PrismaClient();
     const Article = await (async () => {
+        console.log(`Registering article: ${parsedMessageURL.href}`);
         try {
             return await prismaClient.article.create({
                 data: {
@@ -69,4 +72,5 @@ export const registarArticleByMessage = async (message: Message): Promise<void> 
 
     await message.react('👍');  //  成功時
     await prismaClient.$disconnect();
+    console.log(`end registarArticleByMessage`);
 }

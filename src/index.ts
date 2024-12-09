@@ -2,6 +2,7 @@ import { REST } from 'discord.js';
 import { Client, GatewayIntentBits } from 'discord.js';
 import messageCreate from './events/messageCreate';
 import ready from './events/ready';
+import interactionCreate from './events/interactionCreate';
 
 if (!process.env.DISCORD_BOT_TOKEN) {
     throw new Error('DISCORD_BOT_TOKEN is not defined');
@@ -17,5 +18,6 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBit
 
 client.on('ready', ready);
 client.on('messageCreate', messageCreate);
+client.on('interactionCreate', interactionCreate);
 
 client.login(process.env.DISCORD_BOT_TOKEN);

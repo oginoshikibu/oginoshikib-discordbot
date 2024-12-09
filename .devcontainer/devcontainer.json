@@ -30,7 +30,7 @@
 		"ghcr.io/devcontainers/features/git:1": {},
 		"ghcr.io/shyim/devcontainers-features/bun:0": {},
 		"ghcr.io/devcontainers-extra/features/prisma:2": {},
-		"ghcr.io/warrenbuckley/codespace-features/sqlite:1": {}
+		"ghcr.io/warrenbuckley/codespace-features/sqlite:1": {},
 	},
 	// ## Environment
 	"remoteUser": "root",
@@ -49,7 +49,10 @@
 	// ## IDE
 	"customizations": {
 		"vscode": {
-			"extensions": [],
+			"extensions": [
+				"Prisma.prisma",
+				"streetsidesoftware.code-spell-checker"
+			],
 			"settings": {}
 		}
 	}

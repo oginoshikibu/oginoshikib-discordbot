@@ -21,7 +21,15 @@ export const registarArticleByMessage = async (message: Message): Promise<void> 
     const fetchWithTimeout = async (url: string, timeout: number): Promise<Response> => {
         const controller = new AbortController();
         const id = setTimeout(() => controller.abort(), timeout);
-        const response = await fetch(url, { signal: controller.signal });
+        let response: Response;
+        try {
+            response = await fetch(url, { signal: controller.signal });
+        } catch (error: any) {
+            if (error.name === 'AbortError') {
+                throw new Error('Fetch request timed out');
+            }
+            throw error;
+        }
         clearTimeout(id);
         return response;
     };
@@ -37,6 +45,7 @@ export const registarArticleByMessage = async (message: Message): Promise<void> 
             return title;
         } catch (error: any) {
             console.error(`Failed to fetch title: ${error.message}`);
+            await message.react('❌');  //  title取得失敗時
             return 'No title found';
         }
     })();

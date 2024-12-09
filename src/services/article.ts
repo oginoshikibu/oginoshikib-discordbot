@@ -2,9 +2,9 @@ import { PrismaClient } from "@prisma/client";
 import type { Message } from "discord.js";
 
 
-export const registarArticleByMessage = async (message: Message): Promise<void> => {
+export const registerArticleByMessage = async (message: Message): Promise<void> => {
 
-    console.log(`start registarArticleByMessage`);
+    console.log(`start registerArticleByMessage`);
 
     // 正しいURLかどうかをURLクラスを使って判定
     const parsedMessageURL = (() => {
@@ -72,5 +72,5 @@ export const registarArticleByMessage = async (message: Message): Promise<void> 
 
     await message.react('👍');  //  成功時
     await prismaClient.$disconnect();
-    console.log(`end registarArticleByMessage`);
+    console.log(`end registerArticleByMessage`);
 }

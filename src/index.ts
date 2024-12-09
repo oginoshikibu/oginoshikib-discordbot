@@ -1,8 +1,6 @@
 import { REST } from 'discord.js';
 import { Client, GatewayIntentBits } from 'discord.js';
-import messageCreate from './events/messageCreate';
-import ready from './events/ready';
-import interactionCreate from './events/interactionCreate';
+import { interactionCreate, messageCreate, ready } from './events';
 
 if (!process.env.DISCORD_BOT_TOKEN) {
     throw new Error('DISCORD_BOT_TOKEN is not defined');

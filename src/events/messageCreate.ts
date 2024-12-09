@@ -1,6 +1,5 @@
-import { PrismaClient } from "@prisma/client";
 import { Message } from "discord.js"
-import { registarArticleByMessage } from "../services/article";
+import { registerArticleByMessage } from "../services/article";
 
 const messageCreate = async (message: Message): Promise<void> => {
     if (message.author.bot) return;
@@ -8,7 +7,7 @@ const messageCreate = async (message: Message): Promise<void> => {
 
     // register article
     if (message.channel.id === process.env.ARTICLE_CHANNEL_ID) {
-        registarArticleByMessage(message);
+        registerArticleByMessage(message);
     }
 }
 

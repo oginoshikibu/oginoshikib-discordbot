@@ -1,6 +1,6 @@
 import type { Client, TextChannel } from "discord.js";
 
-const ready = (client: Client): void => {
+export const readyHandler = (client: Client): void => {
     console.log(`Logged in as ${client.user?.tag ?? 'unknown user'}`);
     const channelId = process.env.CHANNEL_ID;
     if (channelId) {
@@ -11,5 +11,3 @@ const ready = (client: Client): void => {
         console.error('CHANNEL_ID is not defined');
     }
 }
-
-export default ready;

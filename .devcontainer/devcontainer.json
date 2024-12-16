@@ -26,11 +26,16 @@
 		}
 	],
 	"features": {
-		"ghcr.io/devcontainers/features/common-utils:2": {},
+		"ghcr.io/devcontainers/features/common-utils:2": {
+			"installZsh": "true",
+			"installOhMyZsh": "true",
+			"installOhMyZshConfig": "true",
+			"configureZshAsDefaultShell": "true"
+		},
 		"ghcr.io/devcontainers/features/git:1": {},
 		"ghcr.io/shyim/devcontainers-features/bun:0": {},
 		"ghcr.io/devcontainers-extra/features/prisma:2": {},
-		"ghcr.io/warrenbuckley/codespace-features/sqlite:1": {},
+		"ghcr.io/warrenbuckley/codespace-features/sqlite:1": {}
 	},
 	// ## Environment
 	"remoteUser": "root",

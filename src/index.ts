@@ -1,3 +1,4 @@
+'use strict';
 import { REST, Client, GatewayIntentBits } from 'discord.js';
 import { interactionCreateHandler, messageCreateHandler, readyHandler } from './eventHandler';
 

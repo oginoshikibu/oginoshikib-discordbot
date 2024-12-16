@@ -1,5 +1,6 @@
 import type { Client, TextChannel } from "discord.js";
-import { sendMessageEveryHour } from "../services/cron";
+import { sendMessageCron } from "../services/cron";
+
 
 export const readyHandler = (client: Client): void => {
     console.log(`Logged in as ${client.user?.tag ?? 'unknown user'}`);
@@ -12,5 +13,5 @@ export const readyHandler = (client: Client): void => {
         console.error('DEBUG_CHANNEL_ID is not defined');
     }
 
-    sendMessageEveryHour(client, '<@USER_ID> どうせやる');
-}
+        sendMessageCron(client, '<@USER_ID> どうせやる', '0,30 9-23 * * *');
+    }

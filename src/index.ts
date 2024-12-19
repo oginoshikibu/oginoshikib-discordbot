@@ -1,6 +1,6 @@
 'use strict';
-import { REST, Client, GatewayIntentBits } from 'discord.js';
-import { interactionCreateHandler, messageCreateHandler, readyHandler } from './eventHandler';
+import { REST, Client, GatewayIntentBits, Events } from 'discord.js';
+import { interactionCreateHandler, messageCreateHandler, clientReadyHandler } from './eventHandler';
 
 if (!process.env.DISCORD_BOT_TOKEN) {
     throw new Error('DISCORD_BOT_TOKEN is not defined');
@@ -14,8 +14,8 @@ const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_BOT_TOKEN)
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
-client.on('ready', readyHandler);
-client.on('messageCreate', messageCreateHandler);
-client.on('interactionCreate', interactionCreateHandler);
+client.on(Events.ClientReady, clientReadyHandler);
+client.on(Events.MessageCreate, messageCreateHandler);
+client.on(Events.InteractionCreate, interactionCreateHandler);
 
 client.login(process.env.DISCORD_BOT_TOKEN);

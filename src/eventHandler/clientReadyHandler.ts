@@ -1,8 +1,8 @@
 import type { Client, TextChannel } from "discord.js";
-import { sendMessageCron } from "../services/cron";
+import { sendMessageCron } from "../services/cronServices";
 
 
-export const readyHandler = (client: Client): void => {
+export const clientReadyHandler = (client: Client): void => {
     console.log(`Logged in as ${client.user?.tag ?? 'unknown user'}`);
     const debugChannelId = process.env.DEBUG_CHANNEL_ID;
     if (debugChannelId) {

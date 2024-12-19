@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import type { Message } from "discord.js";
+import { insertArticle } from "../tables/articleTable";
 
 
 export const registerArticleByMessage = async (message: Message): Promise<void> => {
@@ -53,24 +54,12 @@ export const registerArticleByMessage = async (message: Message): Promise<void> 
     })();
 
     // データベースに登録
-    const prismaClient = new PrismaClient();
-    const Article = await (async () => {
-        console.log(`Registering article: ${parsedMessageURL.href}`);
-        try {
-            return await prismaClient.article.create({
-                data: {
-                    url: parsedMessageURL.href,
-                    title: articleTitle,
-                },
-            });
-        } catch (error: any) {
-            message.reply(`Failed to register article: ${error.message}`);
-            return null;
-        }
-    })();
-    if (!Article) return;
+    const { article, error } = await insertArticle(parsedMessageURL.href, articleTitle);
+    if (!error) {
+        await message.react('👍');  //  成功時
+    } else {
+        await message.reply(`Failed to insert Article: ${error.message}`);
+    }
 
-    await message.react('👍');  //  成功時
-    await prismaClient.$disconnect();
     console.log(`end registerArticleByMessage`);
 }

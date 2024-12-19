@@ -1,5 +1,5 @@
 import type { Client, TextChannel } from "discord.js";
-import { sendMessageCron } from "../services/cron";
+import { sendMessageCron } from "../services/cronServices";
 
 
 export const clientReadyHandler = (client: Client): void => {

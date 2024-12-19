@@ -1,5 +1,5 @@
 import { Message } from "discord.js"
-import { registerArticleByMessage } from "../services/article";
+import { registerArticleByMessage } from "../services/articleServices";
 
 export const messageCreateHandler = async (message: Message): Promise<void> => {
     if (message.author.bot) return;

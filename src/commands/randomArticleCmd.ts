@@ -1,11 +1,10 @@
-import type { ApplicationCommandData, CommandInteraction } from 'discord.js';
+import { SlashCommandBuilder, type CommandInteraction } from 'discord.js';
 import type { Command } from './types';
 
 
-const data: ApplicationCommandData = {
-    name: 'random-article',
-    description: 'Get a random article from the database',
-}
+const data = new SlashCommandBuilder()
+    .setName('random-article')
+    .setDescription('Get a random article from the wiki');
 
 const execute = async (interaction: CommandInteraction): Promise<void> => {
     console.log('start randomArticleCmd execute');

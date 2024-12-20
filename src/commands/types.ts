@@ -1,7 +1,7 @@
-import type { ApplicationCommandData, CommandInteraction } from "discord.js";
+import type { CommandInteraction, SlashCommandBuilder } from "discord.js";
 
 export type Command = {
-    data: ApplicationCommandData;
+    data: SlashCommandBuilder
     execute: (interaction: CommandInteraction) => Promise<void>;
 }
 

@@ -8,10 +8,10 @@ export const sendMessageCron = (client: Client, message: string, cronTime: strin
         schedule(cronTime, () => {
             channel?.send(message);
             console.log(`Sent message to ${channel?.name} at ${new Date().toLocaleTimeString()}`);
-        },{
+        }, {
             timezone: "Asia/Tokyo"
-        }    
-    );
+        }
+        );
     } else {
         console.error('NOTIFICATION_CHANNEL_ID is not defined');
     }

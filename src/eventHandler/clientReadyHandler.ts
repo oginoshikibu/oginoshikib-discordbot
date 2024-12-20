@@ -13,5 +13,5 @@ export const clientReadyHandler = (client: Client): void => {
         console.error('DEBUG_CHANNEL_ID is not defined');
     }
 
-        sendMessageCron(client, '<@USER_ID> どうせやる', '0,30 9-23 * * *');
-    }
+    sendMessageCron(client, `<@${process.env.USER_ID}> どうせやる`, '0,30 9-23 * * *');
+}

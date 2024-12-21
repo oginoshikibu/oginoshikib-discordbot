@@ -2,12 +2,11 @@ import { REST, Routes, type Client, type TextChannel } from "discord.js";
 import { sendMessageCron } from "../services/cronServices";
 import * as commandMap from '../commands';
 import type { Command } from "../commands/types";
+const { DISCORD_BOT_TOKEN, GUILD_ID, CLIENT_ID, DEBUG_CHANNEL_ID, USER_ID } = process.env;
+
 
 export const clientReadyHandler = async (client: Client): Promise<void> => {
     console.log(`Logged in as ${client.user?.tag ?? 'unknown user'}`);
-
-
-    const { DISCORD_BOT_TOKEN, GUILD_ID, CLIENT_ID, DEBUG_CHANNEL_ID } = process.env;
 
     const channel = client.channels.cache.get(DEBUG_CHANNEL_ID) as TextChannel;
     const currentTime = new Date().toLocaleTimeString();
@@ -27,5 +26,5 @@ export const clientReadyHandler = async (client: Client): Promise<void> => {
         }
     }));
 
-    sendMessageCron(client, `<@${process.env.USER_ID}> どうせやる`, '0,30 9-23 * * *');
+    sendMessageCron(client, `<@${USER_ID}> どうせやる`, '0,30 9-23 * * *');
 }

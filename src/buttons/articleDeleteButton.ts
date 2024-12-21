@@ -2,18 +2,20 @@ import { ButtonBuilder, ButtonInteraction, ButtonStyle } from 'discord.js';
 import type { Button } from './type';
 
 
+const customId = 'delete-article';
+
 const button = new ButtonBuilder()
-    .setCustomId('delete-article')
+    .setCustomId(customId)
     .setLabel('Delete')
     .setStyle(ButtonStyle.Danger);
 
 const onClick = async (interaction: ButtonInteraction): Promise<void> => {
     console.log('start onClick');
-    await interaction.reply({ content: 'Delete article', ephemeral: true });
     console.log('end onClick');
 }
 
 export const articleDeleteButton: Button = {
+    customId,
     button,
     onClick,
 }

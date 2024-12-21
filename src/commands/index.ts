@@ -1,1 +1,1 @@
-export * from './randomArticleCmd';
+export * from './randomArticleCommand';

@@ -6,14 +6,21 @@ import { articleDeleteButton } from "../buttons";
 export const registerArticleByMessage = async (message: Message): Promise<void> => {
 
     console.log(`start registerArticleByMessage`);
+    // 正規表現を使ってcontent内のURLを抽出
+    const urlRegex = /(https?:\/\/[\w!?\/+\-_~;.,*&@#$%()'[\]\[]+)/g;
+    const urls = message.content.match(urlRegex);
+    if (!urls || urls.length === 0) {
+        await message.reply('No valid URL found in the message');
+        return;
+    }
 
-    // 正しいURLかどうかをURLクラスを使って判定
-    const parsedMessageURL = (() => {
+    // 最初のURLを使用
+    const parsedMessageURL = await (async () => {
         try {
-            return new URL(message.content);
+            return new URL(urls[0]);
         }
         catch (error) {
-            message.reply('Invalid URL');
+            await message.reply('Invalid URL');
             console.error(error);
             return null;
         }
@@ -75,7 +82,7 @@ export const replyRandomArticle = async (receivedMessage: CommandInteraction | M
 
     if (article) {
         await receivedMessage.reply({
-            content: `id ${article.id}\n[${article.title}](${article.url})`, // 削除参照用にidをcontentに追加（message内にmetadataを仕込めない為）
+            content: `id ${article.id}\n[${article.title}](${article.url} )`, // 削除参照用にidをcontentに追加（message内にmetadataを仕込めない為）
             components: [row],
         });
     } else {

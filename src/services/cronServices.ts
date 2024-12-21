@@ -1,8 +1,9 @@
 import { Client, TextChannel } from "discord.js";
 import { schedule } from "node-cron";
+const { NOTIFICATION_CHANNEL_ID } = process.env;
 
 export const sendMessageCron = (client: Client, message: string, cronTime: string, notificationChannelId?: string): void => {
-    notificationChannelId = notificationChannelId || process.env.NOTIFICATION_CHANNEL_ID;
+    notificationChannelId = notificationChannelId || NOTIFICATION_CHANNEL_ID;
     if (notificationChannelId) {
         const channel = client.channels.cache.get(notificationChannelId) as TextChannel;
         schedule(cronTime, () => {

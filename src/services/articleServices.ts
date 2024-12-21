@@ -1,19 +1,26 @@
-import { PrismaClient } from "@prisma/client";
-import type { Message } from "discord.js";
-import { insertArticle } from "../tables/articleTable";
+import { ActionRowBuilder, ButtonBuilder, type CommandInteraction, type Message } from "discord.js";
+import { getRandomArticle, insertArticle } from "../tables/articleTable";
+import { articleDeleteButton } from "../buttons";
 
 
 export const registerArticleByMessage = async (message: Message): Promise<void> => {
 
     console.log(`start registerArticleByMessage`);
+    // 正規表現を使ってcontent内のURLを抽出
+    const urlRegex = /(https?:\/\/[\w!?\/+\-_~;.,*&@#$%()'[\]\[]+)/g;
+    const urls = message.content.match(urlRegex);
+    if (!urls || urls.length === 0) {
+        await message.reply('No valid URL found in the message');
+        return;
+    }
 
-    // 正しいURLかどうかをURLクラスを使って判定
-    const parsedMessageURL = (() => {
+    // 最初のURLを使用
+    const parsedMessageURL = await (async () => {
         try {
-            return new URL(message.content);
+            return new URL(urls[0]);
         }
         catch (error) {
-            message.reply('Invalid URL');
+            await message.reply('Invalid URL');
             console.error(error);
             return null;
         }
@@ -55,11 +62,32 @@ export const registerArticleByMessage = async (message: Message): Promise<void> 
 
     // データベースに登録
     const { article, error } = await insertArticle(parsedMessageURL.href, articleTitle);
-    if (!error) {
+    if (article) {
         await message.react('👍');  //  成功時
     } else {
         await message.reply(`Failed to insert Article: ${error.message}`);
     }
 
     console.log(`end registerArticleByMessage`);
+}
+
+
+export const replyRandomArticle = async (receivedMessage: CommandInteraction | Message): Promise<void> => {
+    console.log('start replyRandomArticle');
+
+    const { article, error } = await getRandomArticle();
+
+    const row = new ActionRowBuilder<ButtonBuilder>()
+        .addComponents(articleDeleteButton.button);
+
+    if (article) {
+        await receivedMessage.reply({
+            content: `id ${article.id}\n[${article.title}](${article.url} )`, // 削除参照用にidをcontentに追加（message内にmetadataを仕込めない為）
+            components: [row],
+        });
+    } else {
+        await receivedMessage.reply(`Failed to get random article: ${error.message}`);
+    }
+
+    console.log('end replyRandomArticle');
 }

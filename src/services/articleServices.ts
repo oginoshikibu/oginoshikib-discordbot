@@ -1,6 +1,5 @@
-import { PrismaClient } from "@prisma/client";
-import type { Message } from "discord.js";
-import { insertArticle } from "../tables/articleTable";
+import type { CommandInteraction, Message } from "discord.js";
+import { getRandomArticle, insertArticle } from "../tables/articleTable";
 
 
 export const registerArticleByMessage = async (message: Message): Promise<void> => {
@@ -55,11 +54,26 @@ export const registerArticleByMessage = async (message: Message): Promise<void> 
 
     // データベースに登録
     const { article, error } = await insertArticle(parsedMessageURL.href, articleTitle);
-    if (!error) {
+    if (article) {
         await message.react('👍');  //  成功時
     } else {
         await message.reply(`Failed to insert Article: ${error.message}`);
     }
 
     console.log(`end registerArticleByMessage`);
+}
+
+
+export const replyRandomArticle = async (receivedMessage: CommandInteraction | Message): Promise<void> => {
+    console.log('start replyRandomArticle');
+
+    const { article, error } = await getRandomArticle();
+
+    if (article) {
+        await receivedMessage.reply(`[${article.title}](${article.url})`);
+    } else {
+        await receivedMessage.reply(`Failed to get random article: ${error.message}`);
+    }
+
+    console.log('end replyRandomArticle');
 }

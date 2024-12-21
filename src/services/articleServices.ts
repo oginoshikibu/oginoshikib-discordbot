@@ -1,5 +1,6 @@
-import type { CommandInteraction, Message } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, type CommandInteraction, type Message } from "discord.js";
 import { getRandomArticle, insertArticle } from "../tables/articleTable";
+import { articleDeleteButton } from "../buttons";
 
 
 export const registerArticleByMessage = async (message: Message): Promise<void> => {
@@ -69,8 +70,14 @@ export const replyRandomArticle = async (receivedMessage: CommandInteraction | M
 
     const { article, error } = await getRandomArticle();
 
+    const row = new ActionRowBuilder<ButtonBuilder>()
+        .addComponents(articleDeleteButton.button);
+
     if (article) {
-        await receivedMessage.reply(`[${article.title}](${article.url})`);
+        await receivedMessage.reply({
+            content: `id ${article.id}\n[${article.title}](${article.url})`, // 削除参照用にidをcontentに追加（message内にmetadataを仕込めない為）
+            components: [row],
+        });
     } else {
         await receivedMessage.reply(`Failed to get random article: ${error.message}`);
     }

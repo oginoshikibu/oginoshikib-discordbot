@@ -13,7 +13,7 @@ const environmentVariablesSchema = z.object({
 
 const result = environmentVariablesSchema.safeParse(process.env)
 if (!result.success) {
-    throw `env type is invalid\n${result.error.errors.map((v) => `${v.message}: env.${v.path[0]}`).join('\n')}`
+    throw new Error(`env type is invalid\n${result.error.errors.map((v) => `${v.message}: env.${v.path[0]}`).join('\n')}`)
 }
 
 

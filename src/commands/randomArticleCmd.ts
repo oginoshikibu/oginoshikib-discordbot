@@ -1,5 +1,6 @@
 import { SlashCommandBuilder, type CommandInteraction } from 'discord.js';
 import type { Command } from './types';
+import { replyRandomArticle } from '../services/articleServices';
 
 
 const data = new SlashCommandBuilder()
@@ -8,7 +9,7 @@ const data = new SlashCommandBuilder()
 
 const execute = async (interaction: CommandInteraction): Promise<void> => {
     console.log('start randomArticleCmd execute');
-    interaction.reply('Hello, world!');
+    await replyRandomArticle(interaction);
     console.log('end randomArticleCmd execute');
 }
 

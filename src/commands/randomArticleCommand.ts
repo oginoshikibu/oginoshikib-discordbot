@@ -5,7 +5,7 @@ import { replyRandomArticle } from '../services/articleServices';
 
 const data = new SlashCommandBuilder()
     .setName('random-article')
-    .setDescription('Get a random article from the wiki');
+    .setDescription('Get a random article from the database');
 
 const execute = async (interaction: CommandInteraction): Promise<void> => {
     console.log('start randomArticleCmd execute');

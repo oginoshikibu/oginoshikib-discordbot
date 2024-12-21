@@ -12,9 +12,7 @@ const execute = async (interaction: CommandInteraction): Promise<void> => {
     console.log('end randomArticleCmd execute');
 }
 
-const randomArticleCmd: Command = {
+export const randomArticleCmd: Command = {
     data,
     execute,
 }
-
-export default randomArticleCmd;

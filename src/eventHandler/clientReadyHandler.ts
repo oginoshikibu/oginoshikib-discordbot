@@ -2,38 +2,20 @@ import { REST, Routes, type Client, type TextChannel } from "discord.js";
 import { sendMessageCron } from "../services/cronServices";
 import * as commandMap from '../commands';
 import type { Command } from "../commands/types";
-import { createPrinter } from "typescript";
-
 
 export const clientReadyHandler = async (client: Client): Promise<void> => {
     console.log(`Logged in as ${client.user?.tag ?? 'unknown user'}`);
-    const debugChannelId = process.env.DEBUG_CHANNEL_ID;
-    if (debugChannelId) {
-        const channel = client.channels.cache.get(debugChannelId) as TextChannel;
-        const currentTime = new Date().toLocaleTimeString();
-        channel?.send(`Hello, world! The current time is ${currentTime}`);
-    } else {
-        console.error('DEBUG_CHANNEL_ID is not defined');
-    }
 
-    // commands
-    const GUILD_ID = process.env.GUILD_ID;
-    if (!GUILD_ID) {
-        throw new Error('GUILD_ID is not defined');
-    }
-    const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
-    if (!DISCORD_BOT_TOKEN) {
-        throw new Error('DISCORD_BOT_TOKEN is not defined');
-    }
-    const CLIENT_ID = process.env.CLIENT_ID;
-    if (!CLIENT_ID) {
-        throw new Error('CLIENT_ID is not defined');
-    }
 
-    // 型推論
+    const { DISCORD_BOT_TOKEN, GUILD_ID, CLIENT_ID, DEBUG_CHANNEL_ID } = process.env;
+
+    const channel = client.channels.cache.get(DEBUG_CHANNEL_ID) as TextChannel;
+    const currentTime = new Date().toLocaleTimeString();
+    channel?.send(`Hello, world! The current time is ${currentTime}`);
+
 
     const rest = new REST({ version: '10' }).setToken(DISCORD_BOT_TOKEN);
-    const commands: Record<string, Command> = commandMap;
+    const commands: Record<string, Command> = commandMap;   // 型推論
     console.log(`Started refreshing application (/) commands: ${Object.keys(commands).join(', ')}`);
     await Promise.all(Object.keys(commands).map(async (key) => {
         const command: Command = commands[key];

@@ -29,7 +29,7 @@ export const getRandomArticle = async (): Promise<{ article: article | null, err
     const recordCount = await prismaClient.article.count();
     if (recordCount === 0) {
         console.error(`article table is empty`);
-        const error ={
+        const error = {
             message: 'article table is empty',
         }
         return { article: null, error };
@@ -53,4 +53,22 @@ export const getRandomArticle = async (): Promise<{ article: article | null, err
     }
 }
 
-    
+export const deleteArticleById = async (id: number): Promise<{ article: article | null, error: any }> => {
+    console.log(`start deleteArticleById`);
+    const prismaClient = new PrismaClient();
+    try {
+        const article = await prismaClient.article.delete({
+            where: {
+                id: id,
+            },
+        });
+        console.log(`Deleted article: ${article}`, { depth: 2 });
+        return { article, error: null };
+    } catch (error: any) {
+        console.error(`Failed to delete Article: ${error.message}`);
+        return { article: null, error };
+    } finally {
+        await prismaClient.$disconnect();
+        console.log(`end deleteArticleById`);
+    }
+}

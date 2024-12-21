@@ -26,6 +26,18 @@ export const insertArticle = async (url: string, title: string): Promise<{ artic
 export const getRandomArticle = async (): Promise<{ article: article | null, error: any }> => {
     console.log(`start getRandomArticle`);
     const prismaClient = new PrismaClient();
+    const recordCount = await prismaClient.article.count();
+    if (recordCount === 0) {
+        console.error(`article table is empty`);
+        const error ={
+            message: 'article table is empty',
+        }
+        return { article: null, error };
+    }
+
+    const randomIndex = Math.floor(Math.random() * recordCount);
+    console.log(`Random index: ${randomIndex} / ${recordCount}`);
+
     try {
         const article = await prismaClient.article.findFirst({
             skip: Math.floor(Math.random() * await prismaClient.article.count()),

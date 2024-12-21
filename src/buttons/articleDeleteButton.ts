@@ -30,7 +30,7 @@ const onClick = async (interaction: ButtonInteraction): Promise<void> => {
         // データベースから削除
         const { article, error } = await deleteArticleById(parseInt(articleId));
         if (article) {
-            await interaction.update({ components: [] });   // ボタンを非表示
+            await interaction.update({ content: interaction.message.content + "\n **Deleted**", components: [] });   // ボタンを非表示
         } else {
             await interaction.reply({ content: `Failed to delete article: ${error.message}`, ephemeral: true });
         }

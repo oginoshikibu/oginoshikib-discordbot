@@ -17,3 +17,11 @@ model article {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }
+
+model timeline{
+  id Int @id @default(autoincrement())
+  kind String
+  comment String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt  
+}

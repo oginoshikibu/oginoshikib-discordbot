@@ -20,9 +20,18 @@ model article {
 
 model timeline{
   id Int @id @default(autoincrement())
-  kind String
+  work_kind work_kind @relation(fields: [work_kind_id], references: [id])
+  work_kind_id Int
   comment String?
   started_at DateTime
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt  
+}
+
+model work_kind{
+  id Int @id @default(autoincrement())
+  name String @unique
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  timelines timeline[]
 }

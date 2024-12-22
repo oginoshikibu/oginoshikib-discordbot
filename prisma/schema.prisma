@@ -10,28 +10,34 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model article {
-  id Int @id @default(autoincrement())
-  url String @unique
-  title String?
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+model Article {
+  id        Int      @id @default(autoincrement())
+  url       String   @unique
+  title     String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("articles")
 }
 
-model timeline{
-  id Int @id @default(autoincrement())
-  work_kind work_kind @relation(fields: [work_kind_id], references: [id])
-  work_kind_id Int
-  comment String?
-  started_at DateTime
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt  
+model Timeline {
+  id         Int      @id @default(autoincrement())
+  workKind   WorkKind @relation(fields: [workKindId], references: [id])
+  workKindId Int      @map("work_kind_id")
+  comment    String?
+  startedAt  DateTime @map("started_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@map("timelines")
 }
 
-model work_kind{
-  id Int @id @default(autoincrement())
-  name String @unique
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  timelines timeline[]
+model WorkKind {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+  timelines Timeline[]
+
+  @@map("work_kinds")
 }

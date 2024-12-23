@@ -5,15 +5,19 @@
   "scripts": {
     "start": "bun --watch run src/index.ts"
   },
+  "prisma": {
+    "seed": "tsx ./prisma/seed.ts"
+  },
   "devDependencies": {
     "@types/bun": "latest",
     "@types/node-cron": "^3.0.11",
     "@types/node-fetch": "^2.6.12",
     "prisma": "^6.0.1",
-    "prisma-case-format": "^2.2.1"
+    "prisma-case-format": "^2.2.1",
+    "tsx": "^4.19.2"
   },
   "peerDependencies": {
-    "typescript": "^5.0.0"
+    "typescript": "^5.7.2"
   },
   "dependencies": {
     "@prisma/client": "^6.0.1",

@@ -27,10 +27,13 @@ async function main() {
     });
 }
 
-main()
-    .catch((e) => {
-        throw e;
-    })
-    .finally(async () => {
-        await prismaClient.$disconnect();
-    });
+if (import.meta.url === `file://${process.argv[1]}`) {
+    main()
+        .catch((e) => {
+            throw e;
+        })
+        .finally(async () => {
+            await prismaClient.$disconnect();
+        });
+}
+

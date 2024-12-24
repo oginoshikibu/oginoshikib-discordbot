@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
-import type { article } from "@prisma/client";
+import type { Article } from "@prisma/client";
 
-export const insertArticle = async (url: string, title: string): Promise<{ article: article | null, error: any }> => {
+export const insertArticle = async (url: string, title: string): Promise<{ article: Article | null, error: any }> => {
     console.log(`start insertArticle`);
     const prismaClient = new PrismaClient();
     try {
@@ -23,7 +23,7 @@ export const insertArticle = async (url: string, title: string): Promise<{ artic
 }
 
 
-export const getRandomArticle = async (): Promise<{ article: article | null, error: any }> => {
+export const getRandomArticle = async (): Promise<{ article: Article | null, error: any }> => {
     console.log(`start getRandomArticle`);
     const prismaClient = new PrismaClient();
     const recordCount = await prismaClient.article.count();
@@ -53,7 +53,7 @@ export const getRandomArticle = async (): Promise<{ article: article | null, err
     }
 }
 
-export const deleteArticleById = async (id: number): Promise<{ article: article | null, error: any }> => {
+export const deleteArticleById = async (id: number): Promise<{ article: Article | null, error: any }> => {
     console.log(`start deleteArticleById`);
     const prismaClient = new PrismaClient();
     try {

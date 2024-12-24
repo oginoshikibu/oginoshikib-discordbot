@@ -8,8 +8,9 @@ export const workKindSeeds = [
     { id: 3, name: '生活' },
     { id: 4, name: '仕事' },
     { id: 5, name: '雑務' },
-    { id: 6, name: 'chill' },
-    { id: 7, name: '外出' },
+    { id: 6, name: '勉強' },
+    { id: 7, name: 'chill' },
+    { id: 8, name: '外出' },
 ];
 
 

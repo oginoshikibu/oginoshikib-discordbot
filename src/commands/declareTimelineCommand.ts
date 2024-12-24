@@ -1,6 +1,7 @@
 import { SlashCommandBuilder, SlashCommandNumberOption, SlashCommandStringOption, type CommandInteraction } from 'discord.js';
 import type { Command } from './types';
 import { workKindSeeds } from '../../prisma/seed';
+import { insertTimelineByCommand } from '../services/timelineService';
 
 const workKindOption: SlashCommandNumberOption = new SlashCommandNumberOption()
     .setName('work-kind')
@@ -25,15 +26,8 @@ const data = new SlashCommandBuilder()
 const execute = async (interaction: CommandInteraction): Promise<void> => {
     console.log('start randomArticleCmd execute');
 
-    const workKind = interaction.options.get('work-kind');
-    const comment = interaction.options.get('comment');
-
-    console.log(`workKind: ${workKind}`);
-    console.log(`comment: ${comment}`);
-
-    await interaction.reply(`workKind: ${workKind}, comment: ${comment}`);
-
-
+    await insertTimelineByCommand(interaction);
+    
     console.log('end randomArticleCmd execute');
 }
 

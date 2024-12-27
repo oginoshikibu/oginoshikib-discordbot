@@ -34,7 +34,7 @@ export const insertTimelineByCommand = async (interaction: CommandInteraction): 
 type DailyLog = { workKindName: string, timeDelta: number, comment: string };
 
 // todo
-const createChart = async (dailyLogs: DailyLog[]): Promise<SVGSVGElement | null> => {
+const createChart = async (dailyLogs: DailyLog[]): Promise<Blob | null> => {
     // ref: https://observablehq.com/@d3/pie-chart/2
 
     // Specify the chart’s dimensions.
@@ -99,10 +99,30 @@ const createChart = async (dailyLogs: DailyLog[]): Promise<SVGSVGElement | null>
             .attr("y", "0.7em")
             .attr("fill-opacity", 0.7)
             .text(d => d.data.comment));
+    // Convert the SVG to a PNG image.
+    const svgNode = svg.node();
+    if (!svgNode) return null;
 
-    return svg.node();
+    const svgString = new XMLSerializer().serializeToString(svgNode);
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext('2d');
+    if (!context) return null;
+
+    const image = new Image();
+    image.src = 'data:image/svg+xml;base64,' + btoa(svgString);
+
+    return new Promise<Blob | null>((resolve) => {
+        image.onload = () => {
+            context.drawImage(image, 0, 0);
+            canvas.toBlob((blob) => {
+                resolve(blob);
+            });
+        };
+        image.onerror = () => resolve(null);
+    });
 }
-
 
 type TimelineCsv = {
     startedAt: string,

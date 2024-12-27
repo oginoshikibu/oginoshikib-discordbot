@@ -31,8 +31,10 @@ export const insertTimelineByCommand = async (interaction: CommandInteraction): 
     console.log('end insertTimelineByCommand');
 }
 
+type DailyLog = { workKindName: string, timeDelta: number, comment: string };
 
-const createChart = async (data: { name: string, value: number }[]): Promise<SVGSVGElement | null> => {
+// todo
+const createChart = async (dailyLogs: DailyLog[]): Promise<SVGSVGElement | null> => {
     // ref: https://observablehq.com/@d3/pie-chart/2
 
     // Specify the chart’s dimensions.
@@ -41,13 +43,13 @@ const createChart = async (data: { name: string, value: number }[]): Promise<SVG
 
     // Create the color scale.
     const color = d3.scaleOrdinal()
-        .domain(data.map(d => d.name))
-        .range(d3.quantize(t => d3.interpolateSpectral(t * 0.8 + 0.1), data.length).reverse())
+        .domain(workKindSeeds.map((workKindSeed) => workKindSeed.name))
+        .range(d3.quantize(t => d3.interpolateSpectral(t * 0.8 + 0.1), workKindSeeds.length).reverse())
 
     // Create the pie layout and arc generator.
-    const pie = d3.pie<{ name: string, value: number }>()
+    const pie = d3.pie<DailyLog>()
         .sort(null)
-        .value(d => d.value);
+        .value(d => d.timeDelta);
 
     const arc = d3.arc()
         .innerRadius(0)
@@ -60,7 +62,7 @@ const createChart = async (data: { name: string, value: number }[]): Promise<SVG
         .innerRadius(labelRadius)
         .outerRadius(labelRadius);
 
-    const arcs = pie(data);
+    const arcs = pie(dailyLogs);
 
     // Create the SVG container.
     const svg = d3.create("svg")
@@ -75,10 +77,10 @@ const createChart = async (data: { name: string, value: number }[]): Promise<SVG
         .selectAll()
         .data(arcs)
         .join("path")
-        .attr("fill", d => color(d.data.name) as string)
+        .attr("fill", d => color(d.data.workKindName) as string)
         .attr("d", arc as unknown as string)
         .append("title")
-        .text(d => `${d.data.name}: ${d.data.value.toLocaleString("en-US")}`);
+        .text(d => `${d.data.workKindName}: ${d.data.comment}`);
 
     // Create a new arc generator to place a label close to the edge.
     // The label shows the value if there is enough room.
@@ -91,12 +93,12 @@ const createChart = async (data: { name: string, value: number }[]): Promise<SVG
         .call(text => text.append("tspan")
             .attr("y", "-0.4em")
             .attr("font-weight", "bold")
-            .text(d => d.data.name))
+            .text(d => d.data.workKindName))
         .call(text => text.filter(d => (d.endAngle - d.startAngle) > 0.25).append("tspan")
             .attr("x", 0)
             .attr("y", "0.7em")
             .attr("fill-opacity", 0.7)
-            .text(d => d.data.value.toLocaleString("en-US")));
+            .text(d => d.data.comment));
 
     return svg.node();
 }

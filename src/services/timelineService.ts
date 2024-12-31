@@ -1,5 +1,5 @@
 import type { CommandInteraction } from "discord.js";
-import { insertTimeline } from "../tables/timelineTable";
+import { getLastDayTimeline, insertTimeline } from "../tables/timelineTable";
 import { workKindSeeds } from "../../prisma/seed";
 
 
@@ -30,8 +30,35 @@ export const insertTimelineByCommand = async (interaction: CommandInteraction): 
     console.log('end insertTimelineByCommand');
 }
 
+type TimelineCsv = {
+    startedAt: string,
+    workName: string,
+    comment: string
+}
+
 export const summaryTimelineCsvByCommand = async (interaction: CommandInteraction): Promise<void> => {
     console.log('start summaryTimelineCsvByCommand');
-    const message = await interaction.reply('SummaryTimelineCsvByCommand');
+    const timelines = await getLastDayTimeline();
+    const timelineCsvs: TimelineCsv[] = timelines.map((timeline) => {
+        return {
+            startedAt: timeline.startedAt.toISOString(),
+            workName: workKindSeeds.find((workKindSeed) => workKindSeed.id === timeline.workKindId)?.name || '',
+            comment: timeline.comment ? timeline.comment : ''
+        }
+    });
+
+    const csv = "startedAt,workName,comment\n" + timelineCsvs.map((timelineCsv) => {
+        return `${timelineCsv.startedAt},${timelineCsv.workName},${timelineCsv.comment}`;
+    }).join('\n');
+
+
+    await interaction.reply({
+        content: 'Here is the summary of the timeline',
+        files: [{
+            name: 'timeline.csv',
+            attachment: Buffer.from(csv)
+        }]
+    });
+
     console.log('end summaryTimelineCsvByCommand');
 }

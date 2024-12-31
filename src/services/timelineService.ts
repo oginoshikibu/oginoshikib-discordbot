@@ -53,11 +53,7 @@ export const summaryTimelineCsvByCommand = async (interaction: CommandInteractio
 
 
     await interaction.reply({
-        content: 'Here is the summary of the timeline',
-        files: [{
-            name: 'timeline.csv',
-            attachment: Buffer.from(csv)
-        }]
+        content: csv,
     });
 
     console.log('end summaryTimelineCsvByCommand');

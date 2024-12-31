@@ -29,3 +29,9 @@ export const insertTimelineByCommand = async (interaction: CommandInteraction): 
 
     console.log('end insertTimelineByCommand');
 }
+
+export const summaryTimelineCsvByCommand = async (interaction: CommandInteraction): Promise<void> => {
+    console.log('start summaryTimelineCsvByCommand');
+    const message = await interaction.reply('SummaryTimelineCsvByCommand');
+    console.log('end summaryTimelineCsvByCommand');
+}

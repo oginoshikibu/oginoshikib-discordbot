@@ -66,7 +66,8 @@ const createChart = async (dailyLogs: DailyLog[]): Promise<Blob | null> => {
     const arcs = pie(dailyLogs);
 
     // Create the SVG container.
-    const svg = d3.create("svg")
+    const body = d3.select("body");
+    const svg = body.append("svg")
         .attr("width", width)
         .attr("height", height)
         .attr("viewBox", [-width / 2, -height / 2, width, height])

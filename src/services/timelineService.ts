@@ -1,6 +1,7 @@
 import type { CommandInteraction } from "discord.js";
 import * as d3 from 'd3';
 import { getLastDayTimeline, insertTimeline } from "../tables/timelineTable";
+import { createCanvas, loadImage } from 'canvas';
 import { workKindSeeds } from "../../prisma/seed";
 
 
@@ -103,24 +104,22 @@ const createChart = async (dailyLogs: DailyLog[]): Promise<Blob | null> => {
     const svgNode = svg.node();
     if (!svgNode) return null;
 
-    const svgString = new XMLSerializer().serializeToString(svgNode);
-    const canvas = document.createElement('canvas');
-    canvas.width = width;
-    canvas.height = height;
+    const canvas = createCanvas(width, height);
     const context = canvas.getContext('2d');
     if (!context) return null;
 
-    const image = new Image();
-    image.src = 'data:image/svg+xml;base64,' + btoa(svgString);
+    const svgString = new XMLSerializer().serializeToString(svgNode);
+    const image = await loadImage('data:image/svg+xml;base64,' + Buffer.from(svgString).toString('base64'));
+    context.drawImage(image, 0, 0);
 
     return new Promise<Blob | null>((resolve) => {
-        image.onload = () => {
-            context.drawImage(image, 0, 0);
-            canvas.toBlob((blob) => {
-                resolve(blob);
-            });
-        };
-        image.onerror = () => resolve(null);
+        canvas.toBuffer((err, buffer) => {
+            if (err) {
+                resolve(null);
+            } else {
+                resolve(new Blob([buffer]));
+            }
+        });
     });
 }
 

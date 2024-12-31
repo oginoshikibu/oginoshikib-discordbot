@@ -127,6 +127,8 @@ const createChart = async (dailyLogs: DailyLog[]): Promise<Blob | null> => {
 export const summaryTimelinePngByCommand = async (interaction: CommandInteraction): Promise<void> => {
     console.log('start summaryTimelinePngByCommand');
 
+    await interaction.deferReply();
+
     const lastDayTimelines = await getLastDayTimeline();
     let prev = lastDayTimelines[0];
     const dailyLogs: DailyLog[] = lastDayTimelines.slice(1).map((timeline) => {
@@ -144,7 +146,7 @@ export const summaryTimelinePngByCommand = async (interaction: CommandInteractio
     }
 
     const buffer = Buffer.from(await blob.arrayBuffer());
-    await interaction.reply({ files: [{ attachment: buffer, name: 'chart.png' }] });
+    await interaction.editReply({ files: [{ attachment: buffer, name: 'chart.png' }] });
     console.log('end summaryTimelinePngByCommand');
 
 }

@@ -124,31 +124,27 @@ const createChart = async (dailyLogs: DailyLog[]): Promise<Blob | null> => {
     });
 }
 
-type TimelineCsv = {
-    startedAt: string,
-    workName: string,
-    comment: string
-}
+export const summaryTimelinePngByCommand = async (interaction: CommandInteraction): Promise<void> => {
+    console.log('start summaryTimelinePngByCommand');
 
-export const summaryTimelineCsvByCommand = async (interaction: CommandInteraction): Promise<void> => {
-    console.log('start summaryTimelineCsvByCommand');
-    const timelines = await getLastDayTimeline();
-    const timelineCsvs: TimelineCsv[] = timelines.map((timeline) => {
-        return {
-            startedAt: timeline.startedAt.toISOString(),
-            workName: workKindSeeds.find((workKindSeed) => workKindSeed.id === timeline.workKindId)?.name || '',
-            comment: timeline.comment ? timeline.comment : ''
-        }
+    const lastDayTimelines = await getLastDayTimeline();
+    let prev = lastDayTimelines[0];
+    const dailyLogs: DailyLog[] = lastDayTimelines.slice(1).map((timeline) => {
+        const timeDelta = (timeline.startedAt.getTime() - prev.startedAt.getTime()) / 1000 / 60;
+        const workKindName = workKindSeeds.find((workKindSeed) => workKindSeed.id === prev.workKindId)?.name ?? 'Unknown';
+        const comment = prev.comment ?? '';
+        prev = timeline;
+        return { workKindName, timeDelta, comment };
     });
 
-    const csv = "startedAt,workName,comment\n" + timelineCsvs.map((timelineCsv) => {
-        return `${timelineCsv.startedAt},${timelineCsv.workName},${timelineCsv.comment}`;
-    }).join('\n');
+    const blob = await createChart(dailyLogs);
+    if (!blob) {
+        await interaction.reply('Failed to create a chart');
+        return;
+    }
 
+    const buffer = Buffer.from(await blob.arrayBuffer());
+    await interaction.reply({ files: [{ attachment: buffer, name: 'chart.png' }] });
+    console.log('end summaryTimelinePngByCommand');
 
-    await interaction.reply({
-        content: csv,
-    });
-
-    console.log('end summaryTimelineCsvByCommand');
 }

@@ -1,6 +1,6 @@
 import { SlashCommandBuilder, type CommandInteraction } from 'discord.js';
 import type { Command } from './types';
-import { summaryTimelineCsvByCommand } from '../services/timelineService';
+import { summaryTimelinePngByCommand } from '../services/timelineService';
 
 
 const data = new SlashCommandBuilder()
@@ -9,7 +9,7 @@ const data = new SlashCommandBuilder()
 
 const execute = async (interaction: CommandInteraction): Promise<void> => {
     console.log('start summaryCmd execute');
-    await summaryTimelineCsvByCommand(interaction);
+    await summaryTimelinePngByCommand(interaction);
     console.log('end summaryCmd execute');
 }
 

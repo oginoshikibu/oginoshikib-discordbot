@@ -12,7 +12,7 @@ const execute = async (interaction: CommandInteraction): Promise<void> => {
     console.log('end sakuraiCmd execute');
 }
 
-export const randomArticleCmd: Command = {
+export const sakuraiCmd: Command = {
     data,
     execute,
 }

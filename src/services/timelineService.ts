@@ -2,7 +2,7 @@ import type { CommandInteraction } from "discord.js";
 import * as d3 from 'd3';
 import { JSDOM } from 'jsdom';
 import { getLastDayTimeline, insertTimeline } from "../tables/timelineTable";
-import { createCanvas, loadImage } from 'canvas';
+import { createCanvas, Image, loadImage, registerFont } from 'canvas';
 import { workKindSeeds } from "../../prisma/seed";
 
 export const insertTimelineByCommand = async (interaction: CommandInteraction): Promise<void> => {
@@ -36,6 +36,8 @@ type DailyLog = { workKindName: string, timeDelta: number, comment: string };
 
 // todo
 const createChart = async (dailyLogs: DailyLog[]): Promise<Blob | null> => {
+
+    console.log('start createChart');
     // ref: https://observablehq.com/@d3/pie-chart/2
 
     // Specify the chart’s dimensions.
@@ -55,7 +57,6 @@ const createChart = async (dailyLogs: DailyLog[]): Promise<Blob | null> => {
     const arc = d3.arc()
         .innerRadius(0)
         .outerRadius(Math.min(width, height) / 2 - 1);
-
     const labelRadius = (Math.min(width, height) / 2 - 1) * 0.8;
 
     // A separate arc generator for labels.
@@ -96,32 +97,30 @@ const createChart = async (dailyLogs: DailyLog[]): Promise<Blob | null> => {
         .call(text => text.append("tspan")
             .attr("y", "-0.4em")
             .attr("font-weight", "bold")
+            .attr("font-size", "12px")  // Increase font size
             .text(d => d.data.workKindName))
         .call(text => text.filter(d => (d.endAngle - d.startAngle) > 0.25).append("tspan")
             .attr("x", 0)
             .attr("y", "0.7em")
             .attr("fill-opacity", 0.7)
+            .attr("font-size", "12px")  // Increase font size
             .text(d => d.data.comment));
-    // Convert the SVG to a PNG image.
-    const svgNode = svg.node();
-    if (!svgNode) return null;
 
+    // Convert the SVG to a PNG image.
     const canvas = createCanvas(width, height);
     const context = canvas.getContext('2d');
-    if (!context) return null;
 
-    const svgString = new XMLSerializer().serializeToString(svgNode);
-    const image = await loadImage('data:image/svg+xml;base64,' + Buffer.from(svgString).toString('base64'));
-    context.drawImage(image, 0, 0);
-
-    return new Promise<Blob | null>((resolve) => {
-        canvas.toBuffer((err, buffer) => {
-            if (err) {
-                resolve(null);
-            } else {
-                resolve(new Blob([buffer]));
-            }
-        });
+    // Load a Japanese font
+    registerFont('/workspace/fonts/NotoSansJP-Regular.ttf', { family: 'Noto Sans JP' });
+    context.font = '10px "Noto Sans JP"';
+    const svgString = body.html();
+    const svgBuffer = Buffer.from(svgString);
+    const image = await loadImage(svgBuffer);
+    context?.drawImage(image, 0, 0);
+    console.log("end convert");
+    return new Promise((resolve) => {
+        const buffer = canvas.toBuffer('image/png');
+        resolve(new Blob([buffer], { type: 'image/png' }));
     });
 }
 
@@ -131,6 +130,7 @@ export const summaryTimelinePngByCommand = async (interaction: CommandInteractio
     await interaction.deferReply();
 
     const lastDayTimelines = await getLastDayTimeline();
+    lastDayTimelines.push({ startedAt: new Date(), workKindId: 1, comment: 'dummy', createdAt: new Date(), updatedAt: new Date(), id: 1 });
     let prev = lastDayTimelines[0];
     const dailyLogs: DailyLog[] = lastDayTimelines.slice(1).map((timeline) => {
         const timeDelta = (timeline.startedAt.getTime() - prev.startedAt.getTime()) / 1000 / 60;

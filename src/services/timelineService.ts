@@ -111,7 +111,7 @@ const createChart = async (dailyLogs: DailyLog[]): Promise<Blob | null> => {
     const context = canvas.getContext('2d');
 
     // Load a Japanese font
-    registerFont('../../fonts/NotoSansJP-Regular.ttf', { family: 'Noto Sans JP' });
+    registerFont('fonts/NotoSansJP-Regular.ttf', { family: 'Noto Sans JP' });
     context.font = '10px "Noto Sans JP"';
     const svgString = body.html();
     const svgBuffer = Buffer.from(svgString);

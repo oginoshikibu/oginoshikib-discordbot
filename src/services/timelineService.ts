@@ -1,9 +1,9 @@
 import type { CommandInteraction } from "discord.js";
 import * as d3 from 'd3';
+import { JSDOM } from 'jsdom';
 import { getLastDayTimeline, insertTimeline } from "../tables/timelineTable";
 import { createCanvas, loadImage } from 'canvas';
 import { workKindSeeds } from "../../prisma/seed";
-
 
 export const insertTimelineByCommand = async (interaction: CommandInteraction): Promise<void> => {
     console.log('start insertTimelineByCommand');
@@ -66,7 +66,8 @@ const createChart = async (dailyLogs: DailyLog[]): Promise<Blob | null> => {
     const arcs = pie(dailyLogs);
 
     // Create the SVG container.
-    const body = d3.select("body");
+    const document = new JSDOM().window.document;
+    const body = d3.select(document.body);
     const svg = body.append("svg")
         .attr("width", width)
         .attr("height", height)

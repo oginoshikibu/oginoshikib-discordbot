@@ -106,6 +106,16 @@ const createChart = async (dailyLogs: DailyLog[]): Promise<Blob | null> => {
             .attr("font-size", "12px")  // Increase font size
             .text(d => d.data.comment));
 
+    // 中央に合計時間を表示
+    const totalMinutes = dailyLogs.reduce((total, dailyLog) => total + dailyLog.timeDelta, 0);
+    const totalHours = totalMinutes / 60;
+    const remainMinutes = totalMinutes % 60;
+    svg.append("text")
+        .attr("text-anchor", "middle")
+        .attr("font-size", "12px")  // Increase font size
+        .attr("y", 0)
+        .text(`${Math.floor(totalHours)}h ${remainMinutes}m`);
+
     // Convert the SVG to a PNG image.
     const canvas = createCanvas(width, height);
     const context = canvas.getContext('2d');

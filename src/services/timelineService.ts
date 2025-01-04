@@ -34,7 +34,6 @@ export const insertTimelineByCommand = async (interaction: CommandInteraction): 
 
 type DailyLog = { workKindName: string, timeDelta: number, comment: string };
 
-// todo
 const createChart = async (dailyLogs: DailyLog[]): Promise<Blob | null> => {
 
     console.log('start createChart');
@@ -140,6 +139,17 @@ export const summaryTimelinePngByCommand = async (interaction: CommandInteractio
 
     await interaction.deferReply();
 
+    const payload = await createSummaryTimePngPayload();
+
+    await interaction.editReply(payload);
+    console.log('end summaryTimelinePngByCommand');
+
+}
+
+type messagePayload = { content?: string, files?: { attachment: Buffer, name: string }[] }
+
+const createSummaryTimePngPayload = async (): Promise<messagePayload> => {
+
     const lastDayTimelines = await getLastDayTimeline();
     lastDayTimelines.push({ startedAt: new Date(), workKindId: 1, comment: 'dummy', createdAt: new Date(), updatedAt: new Date(), id: 1 });
     let prev = lastDayTimelines[0];
@@ -153,12 +163,10 @@ export const summaryTimelinePngByCommand = async (interaction: CommandInteractio
 
     const blob = await createChart(dailyLogs);
     if (!blob) {
-        await interaction.reply('Failed to create a chart');
-        return;
+        return ({ content: 'Failed to create a chart' });
     }
 
     const buffer = Buffer.from(await blob.arrayBuffer());
-    await interaction.editReply({ files: [{ attachment: buffer, name: 'chart.png' }] });
-    console.log('end summaryTimelinePngByCommand');
-
+    return ({ files: [{ attachment: buffer, name: 'chart.png' }] });
 }
+

@@ -115,7 +115,7 @@ const createChart = async (dailyLogs: DailyLog[]): Promise<Blob | null> => {
         .attr("font-size", "17px")
         .attr("font-weight", "bold")
         .attr("y", 0)
-        .text(`${Math.floor(totalHours)}h ${remainMinutes}m`);
+        .text(`${String(Math.floor(totalHours)).padStart(2, '0')}h ${String(remainMinutes).padStart(2, '0')}m`);
 
     // Convert the SVG to a PNG image.
     const canvas = createCanvas(width, height);

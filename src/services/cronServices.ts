@@ -12,7 +12,7 @@ export const sendMessageCron = (client: Client, message: string, cronTime: strin
     }, cronTime, []);
 }
 
-export const cronService = (f: Function, cronTime: string, args: any[]): void => {
+export const cronService = <T extends any[]>(f: (...args: T) => void, cronTime: string, args: T): void => {
     schedule(cronTime, () => {
         f(...args);
         console.log(`Cron job executed at ${new Date().toLocaleTimeString()}`);

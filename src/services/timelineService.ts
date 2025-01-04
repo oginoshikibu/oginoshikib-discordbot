@@ -98,7 +98,7 @@ const createChart = async (dailyLogs: DailyLog[]): Promise<Blob | null> => {
             .attr("y", "-0.4em")
             .attr("font-weight", "bold")
             .attr("font-size", "12px")
-            .text(d => d.data.workKindName))
+            .text(d => d.data.workKindName + ' ' + (d.endAngle - d.startAngle) / (2 * Math.PI) * 100 + '%'))
         .call(text => text.filter(d => (d.endAngle - d.startAngle) > 0.25).append("tspan")
             .attr("x", 0)
             .attr("y", "0.7em")

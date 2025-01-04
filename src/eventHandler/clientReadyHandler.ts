@@ -1,5 +1,6 @@
 import type { Client, TextChannel } from "discord.js";
-import { sendMessageCron } from "../services/cronServices";
+import { cronService, sendMessageCron } from "../services/cronServices";
+import { sendSummaryTimelinePng } from "../services/timelineService";
 const { DEBUG_CHANNEL_ID, USER_ID } = process.env;
 
 
@@ -13,6 +14,7 @@ export const clientReadyHandler = async (client: Client): Promise<void> => {
 
 
     sendMessageCron(client, `<@${USER_ID}> どうせやる`, '0,30 9-23 * * *');
+    cronService(sendSummaryTimelinePng, '0,30 9-23 * * *', [client]);
     console.log('Finished setting cron job');
 
     console.log('clientReadyHandler end');

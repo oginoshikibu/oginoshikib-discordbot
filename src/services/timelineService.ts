@@ -1,9 +1,12 @@
-import type { CommandInteraction } from "discord.js";
+import type { Client, CommandInteraction, TextChannel } from "discord.js";
 import * as d3 from 'd3';
 import { JSDOM } from 'jsdom';
 import { getLastDayTimeline, insertTimeline } from "../tables/timelineTable";
 import { createCanvas, Image, loadImage, registerFont } from 'canvas';
 import { workKindSeeds } from "../../prisma/seed";
+import { schedule } from "node-cron";
+const { NOTIFICATION_CHANNEL_ID } = process.env;
+
 
 export const insertTimelineByCommand = async (interaction: CommandInteraction): Promise<void> => {
     console.log('start insertTimelineByCommand');
@@ -34,7 +37,6 @@ export const insertTimelineByCommand = async (interaction: CommandInteraction): 
 
 type DailyLog = { workKindName: string, timeDelta: number, comment: string };
 
-// todo
 const createChart = async (dailyLogs: DailyLog[]): Promise<Blob | null> => {
 
     console.log('start createChart');
@@ -140,6 +142,26 @@ export const summaryTimelinePngByCommand = async (interaction: CommandInteractio
 
     await interaction.deferReply();
 
+    const payload = await createSummaryTimePngPayload();
+
+    await interaction.editReply(payload);
+    console.log('end summaryTimelinePngByCommand');
+
+}
+
+export const sendSummaryTimelinePng = async (client: Client, notificationChannelId?: string): Promise<void> => {
+    console.log('start sendSummaryTimelinePng');
+    notificationChannelId = notificationChannelId || NOTIFICATION_CHANNEL_ID;
+    const channel = client.channels.cache.get(notificationChannelId) as TextChannel;
+    const payload = await createSummaryTimePngPayload();
+    channel?.send(payload);
+    console.log('end sendSummaryTimelinePng');
+}
+
+type messagePayload = { content?: string, files?: { attachment: Buffer, name: string }[] }
+
+const createSummaryTimePngPayload = async (): Promise<messagePayload> => {
+
     const lastDayTimelines = await getLastDayTimeline();
     lastDayTimelines.push({ startedAt: new Date(), workKindId: 1, comment: 'dummy', createdAt: new Date(), updatedAt: new Date(), id: 1 });
     let prev = lastDayTimelines[0];
@@ -153,12 +175,10 @@ export const summaryTimelinePngByCommand = async (interaction: CommandInteractio
 
     const blob = await createChart(dailyLogs);
     if (!blob) {
-        await interaction.reply('Failed to create a chart');
-        return;
+        return ({ content: 'Failed to create a chart' });
     }
 
     const buffer = Buffer.from(await blob.arrayBuffer());
-    await interaction.editReply({ files: [{ attachment: buffer, name: 'chart.png' }] });
-    console.log('end summaryTimelinePngByCommand');
-
+    return ({ files: [{ attachment: buffer, name: 'chart.png' }] });
 }
+

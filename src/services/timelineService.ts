@@ -97,14 +97,25 @@ const createChart = async (dailyLogs: DailyLog[]): Promise<Blob | null> => {
         .call(text => text.append("tspan")
             .attr("y", "-0.4em")
             .attr("font-weight", "bold")
-            .attr("font-size", "12px")  // Increase font size
+            .attr("font-size", "12px")
             .text(d => d.data.workKindName))
         .call(text => text.filter(d => (d.endAngle - d.startAngle) > 0.25).append("tspan")
             .attr("x", 0)
             .attr("y", "0.7em")
             .attr("fill-opacity", 0.7)
-            .attr("font-size", "12px")  // Increase font size
+            .attr("font-size", "12px")
             .text(d => d.data.comment));
+
+    // 中央に合計時間を表示
+    const totalMinutes = dailyLogs.reduce((total, dailyLog) => total + dailyLog.timeDelta, 0);
+    const totalHours = totalMinutes / 60;
+    const remainMinutes = Math.floor(totalMinutes % 60);
+    svg.append("text")
+        .attr("text-anchor", "middle")
+        .attr("font-size", "20px")
+        .attr("font-weight", "bold")
+        .attr("y", 0)
+        .text(`${String(Math.floor(totalHours)).padStart(2, '0')}h ${String(remainMinutes).padStart(2, '0')}m`);
 
     // Convert the SVG to a PNG image.
     const canvas = createCanvas(width, height);

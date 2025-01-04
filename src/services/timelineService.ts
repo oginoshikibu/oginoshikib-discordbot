@@ -1,9 +1,12 @@
-import type { CommandInteraction } from "discord.js";
+import type { Client, CommandInteraction, TextChannel } from "discord.js";
 import * as d3 from 'd3';
 import { JSDOM } from 'jsdom';
 import { getLastDayTimeline, insertTimeline } from "../tables/timelineTable";
 import { createCanvas, Image, loadImage, registerFont } from 'canvas';
 import { workKindSeeds } from "../../prisma/seed";
+import { schedule } from "node-cron";
+const { NOTIFICATION_CHANNEL_ID } = process.env;
+
 
 export const insertTimelineByCommand = async (interaction: CommandInteraction): Promise<void> => {
     console.log('start insertTimelineByCommand');
@@ -144,6 +147,15 @@ export const summaryTimelinePngByCommand = async (interaction: CommandInteractio
     await interaction.editReply(payload);
     console.log('end summaryTimelinePngByCommand');
 
+}
+
+export const sendSummaryTimelinePng = async (client: Client, notificationChannelId?: string): Promise<void> => {
+    console.log('start sendSummaryTimelinePng');
+    notificationChannelId = notificationChannelId || NOTIFICATION_CHANNEL_ID;
+    const channel = client.channels.cache.get(notificationChannelId) as TextChannel;
+    const payload = await createSummaryTimePngPayload();
+    channel?.send(payload);
+    console.log('end sendSummaryTimelinePng');
 }
 
 type messagePayload = { content?: string, files?: { attachment: Buffer, name: string }[] }

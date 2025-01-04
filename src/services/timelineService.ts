@@ -112,7 +112,7 @@ const createChart = async (dailyLogs: DailyLog[]): Promise<Blob | null> => {
     const remainMinutes = Math.floor(totalMinutes % 60);
     svg.append("text")
         .attr("text-anchor", "middle")
-        .attr("font-size", "17px")
+        .attr("font-size", "20px")
         .attr("font-weight", "bold")
         .attr("y", 0)
         .text(`${String(Math.floor(totalHours)).padStart(2, '0')}h ${String(remainMinutes).padStart(2, '0')}m`);

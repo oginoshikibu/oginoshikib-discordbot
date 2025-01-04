@@ -109,10 +109,10 @@ const createChart = async (dailyLogs: DailyLog[]): Promise<Blob | null> => {
     // 中央に合計時間を表示
     const totalMinutes = dailyLogs.reduce((total, dailyLog) => total + dailyLog.timeDelta, 0);
     const totalHours = totalMinutes / 60;
-    const remainMinutes = totalMinutes % 60;
+    const remainMinutes = Math.floor(totalMinutes % 60);
     svg.append("text")
         .attr("text-anchor", "middle")
-        .attr("font-size", "12px")  // Increase font size
+        .attr("font-size", "17px")  // Increase font size
         .attr("y", 0)
         .text(`${Math.floor(totalHours)}h ${remainMinutes}m`);
 
